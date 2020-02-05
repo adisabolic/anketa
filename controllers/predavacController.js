@@ -198,7 +198,7 @@ module.exports = {
                     if (vrijeme === "")
                         vrijeme = 15;
                     if (tip === 3 || tip === 0)
-                        odgovori = null;
+                        odgovori = [];
                     else {
                         odgovori = podaci[i].slice(3);
                     }
