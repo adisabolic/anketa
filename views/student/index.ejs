@@ -1,0 +1,17 @@
+
+<form id="forma" action = "" class="text-center">
+    <div style="margin-top: 150px;" class="d-flex justify-content-center row">
+        <div class="form-group col-lg-4">
+            <label for="sifra">Šifra za pristup anketi</label>
+            <input type="textarea" class="form-control" id="sifra" placeholder="Šifra...">
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" onclick='pristupiAnketi($("#sifra").val())'>Pristupi</button>
+</form>
+
+<script>
+    function pristupiAnketi(sifra) {
+        $('#forma').attr('action', "/anketa/" + sifra);
+    }
+</script>

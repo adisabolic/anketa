@@ -1,0 +1,164 @@
+<div id="rezultatiSvi">
+<button class="btn btn-primary" type="button" onclick='nazad()'>Nazad</button>
+<br>
+
+<h2> ZBIRNI REZULTATI </h2>
+<% include partials/zbirni.ejs %>
+
+<% if(!anonimna && predavac) {%>
+    <br>
+        <hr>
+    <h2> POJEDINACNI REZULTATI </h2>
+    <% include partials/pojedinacni.ejs %>
+<% }%>
+</div>
+<script>
+
+    function nazad() {
+        window.location = "/anketa/" + '<%=sifra%>';
+    }
+
+    function zatvoriAnketu() {
+        $.ajax({
+            data: {
+                id: '<%=id_predavanja%>',
+            },
+            url: '/anketa/zatvori',
+            method: 'POST'
+        }).done(function(sifra){
+            window.location = "/anketa/" + sifra;
+        });
+    }
+
+    var podaci;
+    var sviOdgovori = '<%- JSON.stringify(sviOdgovori)%>';
+    sviOdgovori = JSON.parse(sviOdgovori);
+    var id_predavanja = `<%=id_predavanja%>`;
+    var tekst, pitanje;
+    var tip, tekst_odgovori = [];
+    //console.log(sviOdgovori, id_predavanja);
+    var trenutni_rb = `<%=trenutni_rb%>`;
+    //console.log(trenutni_rb);
+    for(var i = 0 ; i < sviOdgovori.length ; i++) {
+        if (String(sviOdgovori[i].pitanje.predavanje) != String(id_predavanja) || sviOdgovori[i].pitanje.redni_broj != trenutni_rb)
+            continue;
+        tekst = sviOdgovori[i].pitanje.tekst;
+        pitanje = sviOdgovori[i].pitanje;
+        tip = pitanje.tip;
+        podaci = new Array(pitanje.odgovori.length).fill(0);
+        break;
+    }
+    for(var i = 0 ; i < sviOdgovori.length ; i++) {
+        if (String(sviOdgovori[i].pitanje.predavanje) != String(id_predavanja) || sviOdgovori[i].pitanje.redni_broj != trenutni_rb)
+            continue;
+        if (sviOdgovori[i].odgovori.length !== 0) {
+            for (var j = 0; j < sviOdgovori[i].odgovori.length; j++) {
+                podaci[sviOdgovori[i].odgovori[j]] += 1;
+            }
+        } else {
+            var imaLi = false;
+            for(var j = 0 ; j < tekst_odgovori.length ; j++)
+                if(tekst_odgovori[j][0] == sviOdgovori[i].tekst_odgovora) {
+                    tekst_odgovori[j][1]++;
+                    imaLi = true;
+                    break;
+                }
+            if(!imaLi)
+                tekst_odgovori.push([sviOdgovori[i].tekst_odgovora, 50]);
+        }
+    }
+    if(tip == 1 || tip == 2) {
+        var ctx = $('#myChart1');
+        var pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: pitanje.odgovori,
+                datasets: [{
+                    label: tekst,
+                    data: podaci,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            }
+        });
+        ctx = $('#myChart2');
+        var myDoughnutChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: pitanje.odgovori,
+                datasets: [{
+                    label: tekst,
+                    data: podaci,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            }
+        });
+        ctx = $('#myChart3');
+        var barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: pitanje.odgovori,
+                datasets: [{
+                    label: tekst,
+                    data: podaci,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            }
+        });
+    } else {
+        console.log(tekst_odgovori)
+        WordCloud.minFontSize = "20px"
+        WordCloud(document.getElementById('myChart1'), { list: tekst_odgovori} );
+        tekst_odgovori.forEach(t => {
+            $('#tekstualni').append("<li class=\"list-group-item\" style=\"text-indent: 1em\">Odgovor " + t[0] + ": " + (t[1] - 49) + "</li>")
+        })
+    }
+</script>
+<script src="/js/sockets.js"></script>

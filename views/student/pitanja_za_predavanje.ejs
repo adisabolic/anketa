@@ -1,0 +1,96 @@
+<ul class="list-group">
+<% for(var i = 0 ; i < pitanja.length ; i++) {%>
+    <% if(!pitanja[i].zavrseno) { %>
+        <li class="list-group-item">Pitanje: <%= pitanja[i].pitanje %></li>
+        <li class="list-group-item" style="text-indent: 3em">Odgovor: <%= pitanja[i].odgovor %></li>
+            <li class="list-group-item" style="text-indent: 3em">Odobravanja: <%= pitanja[i].odobravanja %></li>
+        <% if(!predavac) {%>
+            <button onclick='odobri("<%=pitanja[i]._id%>")' id="odobri" type="button" class="btn btn-success">Odobri</button>
+        <% } else if(njegovo_predavanje) {%>
+            <br>
+            <div class="row">
+                <div class="form-group col-lg-7">
+                    <label for="odg">Odgovori na pitanje</label>
+                    <input type="text" class="form-control odg" placeholder="Odgovor...">
+                </div>
+                <button style="width: 100px; margin: 5px;" onclick='odgovori("<%=pitanja[i]._id%>", <%= i %>)'
+                        id="odgovori" type="button" class="btn btn-success">Odgovori</button>
+                <br>
+                <button style="width: 100px; margin: 5px;" onclick='zatvori("<%=pitanja[i]._id%>")'
+                        id="zatvori" type="button" class="btn btn-danger">Zatvori pitanje</button>
+            </div>
+        <% }%>
+    <% } %>
+<% }%>
+</ul>
+<br>
+<hr>
+
+<% if(!predavac) {%>
+    <form>
+        <div class="form-group">
+            <label for="pitanje">Postavi pitanje</label>
+            <input type="text" class="form-control" id="pitanje" placeholder="Pitanje...">
+        </div>
+
+        <button type="submit" id="dodajPitanje" class="btn btn-primary">Dodaj pitanje</button>
+    </form>
+<% } %>
+
+
+<script>
+    $('#dodajPitanje').on('click', function(e) {
+        $.ajax({
+            url: '/pitanjaStudenata/' + '<%=id_predavanja%>' + '/dodaj',
+            data: {
+                pitanje: $("#pitanje").val(),
+            },
+            method: 'POST'
+        }).done(function(result){
+            location.reload();
+        });
+    });
+    function odobri(idPitanja) {
+        $.ajax({
+            url: '/pitanjaStudenata/' + '<%=id_predavanja%>' + '/odobri',
+            data: {
+                id_pitanja: idPitanja,
+            },
+            method: 'POST'
+        }).done(function(result){
+            location.reload();
+        });
+    }
+
+    function odgovori(idPitanja, i) {
+        var odg;
+        $(".odg").each(function(ind) {
+            if(ind == i)
+                odg = $(this).val();
+        })
+        $.ajax({
+            url: '/pitanjaStudenata/' + '<%=id_predavanja%>' + '/odgovori',
+            data: {
+                id_pitanja: idPitanja,
+                odgovor: odg
+            },
+            method: 'POST'
+        }).done(function(result){
+            location.reload();
+        });
+    }
+
+    function zatvori(idPitanja) {
+        $.ajax({
+            url: '/pitanjaStudenata/' + '<%= id_predavanja %>' + '/zatvori',
+            data: {
+                id_pitanja: idPitanja,
+            },
+            method: 'POST'
+        }).done(function (result) {
+            location.reload();
+        });
+    }
+
+</script>
+<script src="/js/sockets.js"></script>

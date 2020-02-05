@@ -1,0 +1,107 @@
+<style>
+    label {
+        font-size: 25px;
+    }
+
+    input[type=radio]{
+        transform:scale(1.5);
+    }
+</style>
+
+<% if(predavac) {%>
+    <% include partials/iducePitanje.ejs %>
+<% } %>
+
+<% if(!predavac) {%>
+    <% include partials/pitanjeStudent.ejs %>
+<% } else {%>
+    <% include partials/pitanjePredavac.ejs %>
+<% } %>
+
+
+<script>
+    var trenutnoP = '<%- JSON.stringify(trenutnoPitanje)%>';
+    var sifra = '<%- sifra %>';
+    trenutnoP = JSON.parse(trenutnoP);
+    var tajmer;
+    $("#sekunde").html(trenutnoP.trajanje);
+
+    $("#odgovoriAnketu").on("click", function(e) {
+        let tekst_odgovora = null;
+        let indeks_odgovora = [];
+        let tip = parseInt('<%= trenutnoPitanje.tip %>');
+        if(tip === 3 || tip === 0) {
+            if (tip === 3)
+                tekst_odgovora = $("#tekstOdgovora").val();
+            else {
+                if ($("#odgDa").is(":checked"))
+                    tekst_odgovora = "Da";
+                else
+                    tekst_odgovora = "Ne";
+            }
+        }
+        else {
+            let duzina = parseInt("<%= odgovori.length %>");
+
+            if(tip === 1) {
+                $('.' + 1 + 'opcija').each(function(i) {
+                    if($(this).is(":checked"))
+                        indeks_odgovora.push(i);
+                });
+            }
+            else {
+                $('.' + 2 + 'opcija').each(function(i) {
+                    if($(this).is(":checked"))
+                        indeks_odgovora.push(i);
+                });
+            }
+            console.log("Indeks odgovora", indeks_odgovora);
+        }
+        $.ajax({
+            data: {
+                tekst: tekst_odgovora,
+                odgovori: JSON.stringify(indeks_odgovora),
+                tip: tip,
+                id_studenta: "<%= id_studenta %>",
+                id_pitanja: "<%= id_pitanja %>",
+                sifra: `<%=sifra%>`
+            },
+            url: '/anketa/dodajOdgovorStudenta',
+            method: 'POST'
+        }).done(function(result){
+            window.location = "anketa/"  + `<%=sifra%>` + "/rezultati";
+        });
+    });
+
+    function iducePitanje() {
+        $.ajax({
+            data: {
+                rb: '<%=redni_broj + 1%>',
+                id: '<%=id_predavanja%>'
+            },
+            url: '/anketa/iducePitanje',
+            method: 'POST'
+        }).done(function(sifra){
+            location.reload();
+        });
+    }
+
+    function zatvoriAnketu() {
+        $.ajax({
+            data: {
+                id: '<%=id_predavanja%>',
+            },
+            url: '/anketa/zatvori',
+            method: 'POST'
+        }).done(function(sifra){
+            location.reload();
+        });
+    }
+
+    function prikaziRez() {
+        //$("#odgovoriAnketu").hide();
+        window.location = "/anketa/"  + `<%=sifra%>` + "/rezultati";
+    }
+</script>
+<script src="/js/sockets.js"></script>
+

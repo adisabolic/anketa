@@ -1,0 +1,72 @@
+<br><br>
+<ul class="list-group">
+    <% for (var i = 0 ; i < predavanja.length ; i++) {%>
+    <li class="list-group-item"><a href=<%=`/predavac/predavanje/${predavanja[i]._id}`%>> <%=predavanja[i].naziv%> </a></li>
+    <li class="list-group-item" style="text-indent: 3em">Šifra pristupa: <%=predavanja[i].sifra_pristupa%></li>
+    <% if(!predavanja[i].anonimnaAnketa) {%>
+        <li class="list-group-item" style="text-indent: 3em">Anonimna anketa: Ne</li>
+    <% } else {%>
+        <li class="list-group-item" style="text-indent: 3em">Anonimna anketa: Da</li>
+    <% } %>
+    <% if(predavanja[i].vrijeme_pocetka != null) {%>
+        <li class="list-group-item" style="text-indent: 3em">Vrijeme početka ankete: <%=predavanja[i].vrijeme_pocetka%></li>
+    <% }%>
+    <% }%>
+</ul>
+<br>
+<form>
+    <div class="form-group">
+        <label for="naziv">Naziv predavanja</label>
+        <input type="text" class="form-control" id="naziv" placeholder="Naziv predavanja...">
+    </div>
+
+        <label for="sifra">Šifra za pristup anketi (ako želite da se automatski generiše, ostavite prazno)</label>
+        <input type="text" class="form-control" id="sifra" placeholder="Sifra...">
+    </div>
+    <br>
+    <div class="form-group">
+        <label>Da li je anketa za ovo predavanje anonimna?</label>
+        <div style="text-indent: 1em;" class="form-check">
+
+            <input class="form-check-input" type="radio" name="anonimna" id="anonimnaNe" value=false checked>
+            <label class="form-check-label" for="anonimnaNe">
+                Ne
+            </label>
+        </div>
+        <div style="text-indent: 1em;" class="form-check">
+            <input class="form-check-input" type="radio" name="anonimna" id="anonimnaDa" value=true>
+            <label class="form-check-label" for="anonimnaDa">
+                Da
+            </label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-lg-4">
+            <label for="vrijeme">Vrijeme početka ankete (nije neophodno unijeti)</label>
+                <input id="vrijeme" type="datetime-local" class="form-control" placeholder="Vrijeme pocetka...">
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary"
+            onclick='dodajPredavanje("<%=id_predmeta%>",
+                    $("#naziv").val(), $("#sifra").val(), $("#vrijeme").val())'>Dodaj predavanje</button>
+</form>
+
+<script>
+    function dodajPredavanje(id, naziv, sifra, vrijeme) {
+
+        anonimna = $("#anonimnaDa").is(':checked');
+        $.ajax({
+            url: '/predavac/predavanje/dodaj/' + JSON.stringify({
+                id: id,
+                naziv: naziv,
+                sifra_pristupa: sifra,
+                vrijeme_pocetka: vrijeme,
+                anonimna: anonimna
+            }),
+            method: 'POST'
+        }).done(function(result){
+            location.reload();
+        });
+    }
+</script>

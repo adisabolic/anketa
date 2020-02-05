@@ -1,0 +1,51 @@
+<div style="margin-top: 150px;" class="d-flex justify-content-center row">
+    <div class="form-group col-lg-4">
+        <label><%= trenutnoPitanje.tekst %></label>
+        <% if(trenutnoPitanje.tip === 3) {%>
+        <textarea class="form-control" rows="5" id="tekstOdgovora" placeholder="Odgovor..."></textarea>
+        <% } else if(trenutnoPitanje.tip === 0) {%>
+        <div style="text-indent: 1em;" class="form-check">
+            <input class="form-check-input" type="radio" name="da_ne" id="odgDa" value=true checked>
+            <label class="form-check-label" for="anonimnaNe">
+                Da
+            </label>
+        </div>
+        <div style="text-indent: 1em;" class="form-check">
+            <input class="form-check-input" type="radio" name="da_ne" id="odgNe" value=false>
+            <label class="form-check-label" for="anonimnaDa">
+                Ne
+            </label>
+        </div>
+        <% } else if(trenutnoPitanje.tip === 1) {%>
+        <% for(var i = 0 ; i < odgovori.length ; i++) {%>
+        <div style="text-indent: 1em;" class="form-check">
+            <input class="form-check-input 1opcija" type="radio" name="visestruko1" value='<%= odgovori[i]%>' checked>
+            <label class="form-check-label" for=id>
+                <%= odgovori[i] %>
+            </label>
+        </div>
+        <% }%>
+        <% } else {%>
+        <% for(var i = 0 ; i < odgovori.length ; i++) {%>
+        <div style="text-indent: 1em;" class="form-check">
+            <input class="form-check-input 2opcija" type="checkbox" name="visestruko2" value='<%= odgovori[i]%>'>
+            <label class="form-check-label" for="id">
+                <%= odgovori[i] %>
+            </label>
+        </div>
+        <% }%>
+        <% } %>
+        <hr>
+        <label> Vrijeme za odgovor: <span id="sekunde"></span> sekundi</label><hr>
+    </div>
+</div>
+
+<% if(!odgovorio) {%>
+<div class="text-center">
+    <button id="odgovoriAnketu" type="button" class="btn btn-success">Odgovori</button>
+</div>
+<% } else {%>
+    <div class="text-center">
+        <button id="rez" onclick='prikaziRez()' type="button" class="btn btn-success">Prikazi rezultate</button>
+    </div>
+<% } %>

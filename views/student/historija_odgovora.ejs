@@ -1,0 +1,13 @@
+<ul class="list-group">
+    <% for (var i = 0 ; i < sviOdgovori.length ; i++) {%>
+    <li class="list-group-item">Pitanje: <%= sviOdgovori[i].pitanje.tekst %></li>
+        <% if(sviOdgovori[i].odgStudenta.length != 0) {%>
+            <li class="list-group-item" style="text-indent: 3em">Odgovori: </li>
+            <% for(var j = 0 ; j < sviOdgovori[i].odgStudenta.length ; j++) {%>
+                <li class="list-group-item" style="text-indent: 6em"><%= sviOdgovori[i].pitanje_odgovori[sviOdgovori[i].odgStudenta[j]] %></li>
+            <% }%>
+        <% } else {%>
+            <li class="list-group-item" style="text-indent: 3em">Odgovor: <%=sviOdgovori[i].tekst_odgovora%></li>
+        <% }%>
+    <% }%>
+</ul>

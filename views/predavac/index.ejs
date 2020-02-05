@@ -1,0 +1,27 @@
+<br><br>
+<ul class="list-group">
+    <% for (var i = 0 ; i < predmeti.length ; i++) {%>
+    <li class="list-group-item"><a href=<%=`/predavac/predmet/${predmeti[i]._id}`%>> <%=predmeti[i].naziv%> </a></li>
+    <% }%>
+</ul>
+<br>
+<form>
+
+    <div class="form-group">
+        <label for="naziv">Naziv predmeta</label>
+        <input type="text" class="form-control" id="naziv" placeholder="Naziv predmeta...">
+    </div>
+
+    <button type="submit" class="btn btn-primary" onclick='dodajPredmet($("#naziv").val())'>Dodaj predmet</button>
+</form>
+
+<script>
+    function dodajPredmet(naziv) {
+        $.ajax({
+            url: 'predavac/predmet/dodaj/' + naziv,
+            method: 'POST'
+        }).done(function(result){
+            location.reload();
+        });
+    }
+</script>

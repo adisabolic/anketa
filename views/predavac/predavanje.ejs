@@ -1,0 +1,169 @@
+<% if(!aktivna) {%>
+    <button type="button" class="btn btn-primary" onclick='pokreniAnketu(false)'>Pokreni anketu za predmet</button>
+    <button type="button" class="btn btn-primary" onclick='pokreniAnketu(true)'>Pokreni anonimnu anketu za predmet</button>
+<% } else {%>
+    <button type="button" class="btn btn-primary"><a onclick="otvoriAnketu()">Otvori anketu</a></button>
+    <button type="button" class="btn btn-primary"><a onclick="zatvoriAnketu()">Zaustavi anketu</a></button>
+<% }%>
+
+<br><br>
+<ul class="list-group">
+    <% for (var i = 0 ; i < pitanja.length ; i++) {%>
+    <li class="list-group-item"><a href=<%=`/profesor/pitanje/${pitanja[i]._id}`%>> <%=pitanja[i].tekst%> </a></li>
+    <li class="list-group-item" style="text-indent: 3em">Tip pitanja:
+        <% if(pitanja[i].tip === 0) {%>
+            DA/NE pitanje</li>
+        <% } else if (pitanja[i].tip === 1) {%>
+            Pitanje sa višestrukim odgovorima sa mogućnosti biranja jednog odgovora</li>
+        <% } else if(pitanja[i].tip === 2) {%>
+            Pitanje sa višestrukim odgovorima sa mogućnosti biranja više odgovora</li>
+        <% } else if(pitanja[i].tip === 3) {%>
+            Tekstualno pitanje</li>
+        <% }%>
+    <li class="list-group-item" style="text-indent: 3em">Vrijeme trajanja pitanja (u sekundama): <%=pitanja[i].trajanje%></li>
+    <button type="button" class="btn btn-danger" onclick='izbrisiPitanje("<%=pitanja[i]._id%>")'>Izbriši pitanje</button>
+    <% }%>
+</ul>
+<br><br>
+<hr>
+<p class="h4">Dodaj novo pitanje</p><br>
+<form>
+    <div class="form-group">
+        <label for="naziv">Tekst pitanja</label>
+        <input type="text" class="form-control" id="tekst" placeholder="Tekst pitanja...">
+    </div>
+    <div class="form-group">
+        <label for="vrijeme">Vrijeme trajanja pitanja u sekundama (defaultno je 15s)</label>
+        <input type="text" class="form-control" id="vrijeme" placeholder="Vrijeme trajanja...">
+    </div>
+    <div class="form-group">
+        <label for="tip">Tip pitanja</label>
+        <select class="form-control" id="tip" onchange='promijeniPolja()'>
+            <option value="1">Višestruki izbor sa jednim odabranim</option>
+            <option value="2">Višestruki izbor sa više odabranih</option>
+            <option value="0">DA/NE pitanje</option>
+            <option value="3">Tekstualno pitanje</option>
+        </select>
+    </div>
+    </div>
+
+    <div id="odgovoriOmotac" class="row">
+        <div class="form-group col-lg-4">
+            <label for="odgovori">Ponuđeni odgovori</label>
+                <div id="sviOdgovori">
+                    <button id="dodajPolje" class="btn btn-primary">Dodaj odgovor</button>
+                </div>
+        </div>
+    </div>
+    <br>
+    <button id="novoPitanje" type="submit" class="btn btn-success">Dodaj pitanje</button>
+</form>
+<br>
+<hr>
+<form ref='uploadForm'
+      id='uploadForm'
+      action='/predavac/pitanje/dodaj/fajl'
+      method='post'
+      encType="multipart/form-data">
+    <div class="form-group">
+        <label for="excelFajl">Unesi pitanja iz excel fajla</label>
+        <input type="file" name="excelFajl" class="form-control-file" id="excelFajl">
+        <br>
+        <button id="dodajExcel" class="btn btn-success" type="submit">Dodaj pitanja</button>
+    </div>
+</form>
+
+<script>
+    var brojac = -1;
+
+    $('#dodajPolje').on('click', function(e) {
+        e.preventDefault();
+        brojac++;
+        $('#sviOdgovori')
+            .append(`<div class="form-group col-lg-20"> <input id='${"polje" + brojac}' style="margin: 15px;" type="text" class="form-control" placeholder="Odgovor..."> </div>`);
+    });
+
+    function promijeniPolja() {
+        console.log($('#tip').val());
+        brojac = -1;
+        $('#sviOdgovori').children("div").remove();
+        if($('#tip').val() === "0" || $('#tip').val() === "3") {
+            $('#odgovoriOmotac').hide();
+        } else {
+            $('#odgovoriOmotac').show();
+        }
+    }
+
+    $('#novoPitanje').on('click', function(e) {
+        var ponudjeniOdgovori = [];
+
+        for(var i = 0 ; i <= brojac ; i++)
+            ponudjeniOdgovori.push($("#polje" + i).val());
+        brojac = -1;
+        $.ajax({
+            url: '/predavac/pitanje/dodaj',
+            data: {
+                id: '<%= id_predavanja %>',
+                tekst: $("#tekst").val(),
+                tip: $("#tip").val(),
+                vrijeme: $("#vrijeme").val(),
+                odgovori: JSON.stringify(ponudjeniOdgovori)
+            },
+            method: 'POST'
+        }).done(function(result){
+            location.reload();
+        });
+    });
+
+    /*$('#dodajExcel').on('click', function(e) {
+        $.ajax({
+            url: '/predavac/pitanje/dodaj/fajl',
+            data: {
+                input: $("#excelFajl").val()
+            },
+            method: 'POST'
+        }).done(function(result){
+            location.reload();
+        });
+    });*/
+
+    function izbrisiPitanje(id) {
+        $.ajax({
+            url: '/predavac/pitanje/izbrisi/' + id,
+            method: 'DELETE'
+        }).done(function(result){
+            location.reload();
+        });
+    }
+
+    function pokreniAnketu(anonimna) {
+        console.log(anonimna);
+        $.ajax({
+            data: {
+                id: '<%=id_predavanja%>',
+                anonimna: anonimna
+            },
+            url: '/anketa/pokreni',
+            method: 'POST'
+        }).done(function(sifra){
+            window.location = "/anketa/" + sifra;
+        });
+    }
+
+    function otvoriAnketu() {
+        window.location = "/anketa/" + '<%= sifra %>';
+    }
+
+    function zatvoriAnketu() {
+        $.ajax({
+            data: {
+                id: '<%=id_predavanja%>',
+            },
+            url: '/anketa/zatvori',
+            method: 'POST'
+        }).done(function(sifra){
+            location.reload();
+        });
+    }
+
+</script>

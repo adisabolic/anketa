@@ -1,0 +1,31 @@
+<div class="form-group col-lg-4">
+    <label><%= trenutnoPitanje.tekst %></label>
+    <% if(trenutnoPitanje.tip === 0)  {%>
+    <div style="text-indent: 1em;" class="form-check">
+        <label class="form-check-label" for="anonimnaNe">
+            Da
+        </label>
+    </div>
+    <div style="text-indent: 1em;" class="form-check">
+        <label class="form-check-label" for="anonimnaDa">
+            Ne
+        </label>
+    </div>
+    <% } else if(trenutnoPitanje.tip === 1) {%>
+    <% for(var i = 0 ; i < odgovori.length ; i++) { var id = "1opcija" + i; %>
+    <div style="text-indent: 1em;" class="form-check">
+        <label class="form-check-label" for=id>
+            <%= odgovori[i] %>
+        </label>
+    </div>
+    <% }%>
+    <% } else {%>
+    <% for(var i = 0 ; i < odgovori.length ; i++) { var id = "2opcija" + i; %>
+    <div style="text-indent: 1em;" class="form-check">
+        <label class="form-check-label" for="id">
+            <%= odgovori[i] %>
+        </label>
+    </div>
+    <% }%>
+    <% } %>
+</div>

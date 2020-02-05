@@ -1,0 +1,6 @@
+<ul class="list-group">
+<% for(var i = 0 ; i < predavanja.length ; i++) { %>
+        <li class="list-group-item"><a href=<%=`/pitanjaStudenata/${predavanja[i]._id}`%>>
+                        <%= predavanja[i].predmet.naziv + " - " + predavanja[i].naziv %> </a></li>
+<% }%>
+</ul>

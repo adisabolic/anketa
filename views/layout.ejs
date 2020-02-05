@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="eng">
+<meta charset="UTF-8">
+<head>
+    <title><%=title%></title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <script src="/js/wordcloud2.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+    <div class="login">
+        <% if (loggedIn) { %>
+            <% if(currentUser.predavac) {%>
+                <p>Prijavljen kao
+                    <a href="/predavac">
+                        <%= `${currentUser.ime} ${currentUser.prezime}` %></a>
+                    <span class="log-out">
+                        <a href="/logout">Odjavi se</a>
+                    </span>
+                </p>
+                <div class="text-center"><a href="/pitanjaStudenata">Pitanja za predavanja</a></div>
+            <% } else {%>
+                <p>Prijavljen kao
+                    <a href="/student">
+                        <%= `${currentUser.ime} ${currentUser.prezime}` %></a>
+                    <span class="log-out">
+                            <a href="/logout">Odjavi se</a>
+                    </span>
+                </p>
+                    <div class="text-center"><a href="/student/odgovori">Historija odgovora</a></div>
+                    <div class="text-center"><a href="/pitanjaStudenata">Pitanja za predavanja</a></div>
+            <% }%>
+        <%} else {%>
+            <a href="/">Prijavi se</a>
+        <% } %>
+    </div>
+
+    <h3 class="text-center" style="color: white">
+        PMF ANKETA
+        <small class="text-muted"><%=title%></small>
+    </h3>
+
+    <div style="opacity: 70%; margin-top: 50px;" class="flashes">
+        <% if (flashMessages) { %>
+            <% if (flashMessages.success) { %>
+                <div class="alert alert-success" role="alert">
+                    <%= flashMessages.success %>
+                </div>
+            <% } else if (flashMessages.error) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= flashMessages.error %>
+                </div>
+            <% } %>
+        <% } %>
+    </div>
+
+    <%- body %>
+    <script src="/js/tasktimer.min.js"></script>
+    <script src="/js/wordcloud2.js"></script>
+    <script src="/js/timer.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+</body>
+</html>

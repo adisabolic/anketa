@@ -1,0 +1,16 @@
+<ul class="list-group">
+    <% for (var i = 0 ; i < sviOdgovori.length ; i++) { console.log(sviOdgovori) %>
+        <% if ((String(sviOdgovori[i].pitanje.predavanje) != String(id_predavanja) || sviOdgovori[i].pitanje.redni_broj != trenutni_rb) == false) {%>
+            <li class="list-group-item">Student: <%= sviOdgovori[i].student.ime + " " + sviOdgovori[i].student.prezime %></li>
+            <li class="list-group-item" style="text-indent: 1em">Pitanje: <%= sviOdgovori[i].pitanje.tekst %></li>
+            <% if(sviOdgovori[i].odgovori.length != 0) {%>
+                <li class="list-group-item" style="text-indent: 3em">Odgovori: </li>
+                <% for(var j = 0 ; j < sviOdgovori[i].odgovori.length ; j++) {%>
+                    <li class="list-group-item" style="text-indent: 6em"><%= sviOdgovori[i].pitanje.odgovori[sviOdgovori[i].odgovori[j]] %></li>
+                <% }%>
+            <% } else {%>
+                <li class="list-group-item" style="text-indent: 3em">Odgovor: <%=sviOdgovori[i].tekst_odgovora%></li>
+            <% }%>
+        <% }%>
+    <% } %>
+</ul>
