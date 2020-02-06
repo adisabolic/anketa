@@ -23,16 +23,16 @@ $("#rezultatiSvi").on("change", () => {
     return false;
 });
 socket.on('pitanjeStudenta', function () {
-    location.reload();
+    setTimeout(() => {location.reload();}, 500 );
 });
 socket.on('odobravanje', function () {
-    location.reload();
+    setTimeout(() => {location.reload();}, 500 );
 });
 socket.on('odgovor', function () {
     setTimeout(() => {location.reload();}, 500 );
 });
 socket.on('zatvori', function () {
-    location.reload();
+    setTimeout(() => {location.reload();}, 500 );
 });
 socket.on('odgovoriAnketu', function () {
     location.reload();
