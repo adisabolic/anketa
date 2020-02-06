@@ -136,7 +136,7 @@ module.exports = {
         if(vrijeme === "")
             vrijeme = 15;
         if(tip === 3 || tip === 0)
-            odgovori = null;
+            odgovori = [];
         Pitanje.find({predavanje: id}).sort({redni_broj: -1}).limit(1).then((pit) => {
             if(pit[0])
                 rb = pit[0].redni_broj + 1;
