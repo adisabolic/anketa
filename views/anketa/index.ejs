@@ -69,7 +69,7 @@
             url: '/anketa/dodajOdgovorStudenta',
             method: 'POST'
         }).done(function(result){
-            window.location = "anketa/"  + `<%=sifra%>` + "/rezultati";
+            location.reload();
         });
     });
 
