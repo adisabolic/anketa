@@ -29,7 +29,7 @@ socket.on('odobravanje', function () {
     location.reload();
 });
 socket.on('odgovor', function () {
-    location.reload();
+    setTimeout(() => {location.reload();}, 500 );
 });
 socket.on('zatvori', function () {
     location.reload();
