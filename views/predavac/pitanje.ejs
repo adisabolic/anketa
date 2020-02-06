@@ -1,0 +1,88 @@
+<form>
+    <div class="form-group">
+        <label for="naziv">Tekst pitanja</label>
+        <p><%=pitanje.tekst%></p>
+        <input type="text" class="form-control" id="tekst" placeholder="Tekst pitanja...">
+    </div>
+    <div class="form-group">
+        <label for="vrijeme">Vrijeme trajanja pitanja u sekundama (defaultno je 15s)</label>
+        <p><%=pitanje.trajanje%></p>
+        <input type="text" class="form-control" id="vrijeme" placeholder="Vrijeme trajanja...">
+    </div>
+    <div class="form-group">
+        <label for="tip">Tip pitanja</label>
+        <%if(pitanje.tip == 1) {%>
+            <p>Višestruki izbor sa jednim odabranim</p>
+        <%} else if(pitanje.tip == 2) {%>
+            <p>Višestruki izbor sa više odabranih</p>
+        <% } else if(pitanje.tip == 0) {%>
+        <p>DA/NE pitanje</p>
+        <% } else {%>
+        <p>Tekstualno pitanje</p>
+        <% } %>
+        <select class="form-control" id="tip" onchange='promijeniPolja()'>
+            <option value="1">Višestruki izbor sa jednim odabranim</option>
+            <option value="2">Višestruki izbor sa više odabranih</option>
+            <option value="0">DA/NE pitanje</option>
+            <option value="3">Tekstualno pitanje</option>
+        </select>
+    </div>
+    </div>
+
+    <div id="odgovoriOmotac" class="row">
+        <div class="form-group col-lg-4">
+            <%for(var i = 0 ; i < pitanje.odgovori.length; i++){%>
+                <p><%=pitanje.odgovori[i]%></p>
+            <% }%>
+            <label for="odgovori">Ponuđeni odgovori</label>
+            <div id="sviOdgovori">
+                <button id="dodajPolje" class="btn btn-primary">Dodaj odgovor</button>
+            </div>
+        </div>
+    </div>
+    <br>
+    <button id="novoPitanje" type="submit" class="btn btn-success">Promijeni pitanje</button>
+</form>
+
+<script>
+    var brojac = -1;
+
+    $('#dodajPolje').on('click', function(e) {
+        e.preventDefault();
+        brojac++;
+        $('#sviOdgovori')
+            .append(`<div class="form-group col-lg-20"> <input id='${"polje" + brojac}' style="margin: 15px;" type="text" class="form-control" placeholder="Odgovor..."> </div>`);
+    });
+
+    function promijeniPolja() {
+        console.log($('#tip').val());
+        brojac = -1;
+        $('#sviOdgovori').children("div").remove();
+        if($('#tip').val() === "0" || $('#tip').val() === "3") {
+            $('#odgovoriOmotac').hide();
+        } else {
+            $('#odgovoriOmotac').show();
+        }
+    }
+
+    $('#novoPitanje').on('click', function(e) {
+        var ponudjeniOdgovori = [];
+
+        for(var i = 0 ; i <= brojac ; i++)
+            ponudjeniOdgovori.push($("#polje" + i).val());
+        brojac = -1;
+        $.ajax({
+            url: '/predavac/pitanje/'+'<%= pitanje._id %>',
+            data: {
+                id: '<%= pitanje.id %>',
+                tekst: $("#tekst").val(),
+                tip: $("#tip").val(),
+                vrijeme: $("#vrijeme").val(),
+                odgovori: JSON.stringify(ponudjeniOdgovori),
+            },
+            method: 'POST'
+        }).done(function(result){
+            window.location = "/predavac";
+        });
+    });
+</script>
