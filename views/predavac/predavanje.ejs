@@ -9,7 +9,7 @@
 <br><br>
 <ul class="list-group">
     <% for (var i = 0 ; i < pitanja.length ; i++) {%>
-    <li class="list-group-item"><a href=<%=`/profesor/pitanje/${pitanja[i]._id}`%>> <%=pitanja[i].tekst%> </a></li>
+    <li class="list-group-item"><a href=<%=`/predavac/pitanje/${pitanja[i]._id}`%>> <%=pitanja[i].tekst%> </a></li>
     <li class="list-group-item" style="text-indent: 3em">Tip pitanja:
         <% if(pitanja[i].tip === 0) {%>
             DA/NE pitanje</li>
