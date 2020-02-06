@@ -239,4 +239,38 @@ module.exports = {
             res.redirect('back');
         });
     },
+    pokaziPitanje: (req, res, next) => {
+        var id = req.params.id;
+        Pitanje.findById(id).then((pit) => {
+            res.render("predavac/pitanje", {
+                pitanje: pit,
+                title: "Pitanje"
+            });
+        }).catch(error => {
+            console.log(`Greška pri prikazu pitanja: ${error.message}`);
+            req.flash("error", `Greška pri prikazu pitanja. Pokušajte ponovo!`);
+            res.redirect('back');
+        });
+    },
+    promijeniPitanje: (req, res, next) => {
+
+        let podaci = req.body;
+        let id=podaci.id, tekst = podaci.tekst, tip = podaci.tip, odgovori = JSON.parse(podaci.odgovori), vrijeme = podaci.vrijeme;
+        if(vrijeme === "")
+            vrijeme = 15;
+        if(tip === 3 || tip === 0)
+            odgovori = [];
+        Pitanje.findById(id).then((pit) => {
+            pit.tekst = tekst;
+            pit.tip = tip;
+            pit.odgovori = odgovori;
+            pit.trajanje = vrijeme;
+            pit.save();
+            res.sendStatus(200);
+        }).catch(error => {
+            console.log(`Greška pri prikazu pitanja: ${error.message}`);
+            req.flash("error", `Greška pri prikazu pitanja. Pokušajte ponovo!`);
+            res.redirect('back');
+        });
+    }
 };
