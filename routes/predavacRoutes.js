@@ -13,5 +13,7 @@ router.get("/predavanje/:id", predavacController.provjeraPredavaca, predavacCont
 router.post("/pitanje/dodaj", predavacController.provjeraPredavaca, predavacController.dodajPitanje, homeController.redirectView);
 router.post("/pitanje/dodaj/fajl", predavacController.provjeraPredavaca, predavacController.dodajPitanjeFajl, homeController.redirectView);
 router.delete("/pitanje/izbrisi/:id", predavacController.provjeraPredavaca, predavacController.izbrisiPitanje, homeController.redirectView);
+router.get("/pitanje/:id", predavacController.provjeraPredavaca, predavacController.pokaziPitanje, homeController.redirectView);
+router.post("/pitanje/:id", predavacController.provjeraPredavaca, predavacController.promijeniPitanje, homeController.redirectView);
 
 module.exports = router;
