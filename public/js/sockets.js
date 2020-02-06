@@ -35,8 +35,8 @@ socket.on('zatvori', function () {
     setTimeout(() => {location.reload();}, 500 );
 });
 socket.on('odgovoriAnketu', function () {
-    location.reload();
+    setTimeout(() => {location.reload();}, 500 );
 });
 socket.on('promjenaRez', function () {
-    location.reload();
+    setTimeout(() => {location.reload();}, 500 );
 });
